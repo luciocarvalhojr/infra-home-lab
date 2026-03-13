@@ -1,0 +1,32 @@
+---
+# Usage: ansible-playbook playbooks/upgrade.yml -e k3s_version=v1.35.0+k3s1
+- name: Upgrade k3s control plane
+  hosts: controlplane
+  become: true
+  vars:
+    k3s_version: "v1.34.4+k3s1"  # override with -e k3s_version=vX.Y.Z
+  tasks:
+    - name: Upgrade k3s server
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - server \
+          --cluster-init \
+          --disable traefik \
+          --disable servicelb
+      environment:
+        INSTALL_K3S_VERSION: "{{ k3s_version }}"
+
+- name: Upgrade k3s workers one at a time
+  hosts: workers
+  become: true
+  serial: 1  # rolling upgrade — one worker at a time
+  vars:
+    k3s_version: "v1.34.4+k3s1"
+    controlplane_ip: "192.168.0.150"
+  tasks:
+    - name: Upgrade k3s agent
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - agent \
+          --server https://{{ controlplane_ip }}:6443 \
+          --token {{ hostvars[groups['controlplane'][0]]['k3s_token'] }}
+      environment:
+        INSTALL_K3S_VERSION: "{{ k3s_version }}"

@@ -1,0 +1,24 @@
+# Copy this to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored — never commit it
+
+proxmox_url      = "https://192.168.0.XXX:8006"
+proxmox_user     = "terraform@pve"
+proxmox_password = "your-proxmox-password"
+proxmox_node     = "pve"
+template_id      = 9000
+ssh_public_key   = "ssh-ed25519 AAAA... your-key"
+gateway          = "192.168.0.1"
+dns_server       = "192.168.0.1"
+
+# Control plane
+controlplane_ip     = "192.168.0.150"
+controlplane_cores  = 4
+controlplane_memory = 8192
+controlplane_disk   = 50
+
+# Workers
+worker_count  = 3
+worker_ips    = ["192.168.0.151", "192.168.0.152", "192.168.0.153"]
+worker_cores  = 4
+worker_memory = 8192
+worker_disk   = 100

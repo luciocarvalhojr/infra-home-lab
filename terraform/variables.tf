@@ -2,7 +2,7 @@
 variable "proxmox_url" {
   description = "Proxmox API URL"
   type        = string
-  default     = "https://192.168.0.XXX:8006"  # ← your Proxmox IP
+  default     = "https://192.168.0.90:8006"  # ← your Proxmox IP
 }
 
 variable "proxmox_user" {
@@ -20,7 +20,7 @@ variable "proxmox_password" {
 variable "proxmox_node" {
   description = "Proxmox node name"
   type        = string
-  default     = "pve"  # ← your Proxmox node name (check in UI)
+  default     = "hyper01"  # ← your Proxmox node name (check in UI)
 }
 
 # VM template
@@ -43,35 +43,35 @@ variable "gateway" {
   default     = "192.168.0.1"
 }
 
-variable "dns_server" {
-  description = "DNS server"
-  type        = string
-  default     = "192.168.0.1"
+variable "dns_servers" {
+  description = "DNS servers"
+  type        = list(string)
+  default     = ["192.168.0.100", "192.168.0.110"]
 }
 
 # K3s control plane
 variable "controlplane_ip" {
   description = "Static IP for the control plane VM"
   type        = string
-  default     = "192.168.0.150"
+  default     = "192.168.0.130"
 }
 
 variable "controlplane_cores" {
   description = "CPU cores for control plane"
   type        = number
-  default     = 4
+  default     = 1
 }
 
 variable "controlplane_memory" {
   description = "RAM in MB for control plane"
   type        = number
-  default     = 8192
+  default     = 1024
 }
 
 variable "controlplane_disk" {
   description = "Disk size in GB for control plane"
   type        = number
-  default     = 50
+  default     = 8
 }
 
 # K3s workers
@@ -84,23 +84,48 @@ variable "worker_count" {
 variable "worker_ips" {
   description = "Static IPs for worker nodes"
   type        = list(string)
-  default     = ["192.168.0.151", "192.168.0.152", "192.168.0.153"]
+  default     = ["192.168.0.131", "192.168.0.132", "192.168.0.133"]
 }
 
 variable "worker_cores" {
   description = "CPU cores per worker"
   type        = number
-  default     = 4
+  default     = 1
 }
 
 variable "worker_memory" {
   description = "RAM in MB per worker"
   type        = number
-  default     = 8192
+  default     = 1024
 }
 
 variable "worker_disk" {
   description = "Disk size in GB per worker"
   type        = number
-  default     = 100
+  default     = 8
+}
+
+# Minio S3-compatible backend for Terraform state
+variable "region" {
+  description = "Region for S3 backend (ignored by Minio but required by Terraform)"
+  type        = string
+  default     = "main"
+}
+
+variable "access_key" {
+  description = "Minio access key for S3 backend"
+  type        = string
+  sensitive = true
+}
+
+variable "secret_key" {
+  description = "Minio secret key for S3 backend"
+  type        = string
+  sensitive = true
+}
+
+variable "endpoint" {
+  description = "Minio endpoint for S3 backend"
+  type        = string
+  default     = "http://192.168.0.95:9000"
 }

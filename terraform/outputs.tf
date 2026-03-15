@@ -8,10 +8,10 @@ output "worker_ips" {
   value       = var.worker_ips
 }
 
-output "ansible_inventory" {
-  description = "Ready-to-use Ansible inventory"
-  value = templatefile("${path.module}/../ansible/inventory.yml.tpl", {
-    controlplane_ip = var.controlplane_ip
-    worker_ips      = var.worker_ips
-  })
-}
+#output "ansible_inventory" {
+#  description = "Ready-to-use Ansible inventory"
+#  value = templatefile("${path.module}/../ansible/inventory.yml", {
+#    controlplane_ip = var.controlplane_ip
+#    worker_ips      = var.worker_ips
+#  })
+#}

@@ -13,17 +13,12 @@ terraform {
   backend "s3" {
     bucket = "terraform-state"
     key    = "infrastructure/k3s-home-lab/terraform.tfstate"
-
-    region   = "main"  # Minio ignores this but Terraform requires it
-    endpoint = "http://192.168.0.XXX:9000"  # ← your Minio IP
-
-    access_key = "your-minio-access-key"  # use env var TF_VAR_ or tfvars
-    secret_key = "your-minio-secret-key"
-
+    region = "main"
     skip_credentials_validation = true
     skip_metadata_api_check     = true
     skip_region_validation      = true
-    force_path_style            = true  # required for Minio
+    skip_requesting_account_id  = true
+    use_path_style              = true  # required for Minio
   }
 }
 

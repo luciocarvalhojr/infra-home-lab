@@ -15,12 +15,14 @@ Terraform + Ansible to provision and configure the K3s home lab cluster on Proxm
 ## Topology
 
 ```
-Proxmox (single node)
-├── k8s-controlplane-01  192.168.0.150  4 vCPU  8GB RAM  50GB
-├── k8s-worker-01        192.168.0.151  4 vCPU  8GB RAM  100GB
-├── k8s-worker-02        192.168.0.152  4 vCPU  8GB RAM  100GB
-└── k8s-worker-03        192.168.0.153  4 vCPU  8GB RAM  100GB
+Proxmox hyper01 (single node)
+├── k8s-controlplane-01  192.168.0.130  1 vCPU  1GB RAM  8GB
+├── k8s-worker-01        192.168.0.131  1 vCPU  1GB RAM  8GB
+├── k8s-worker-02        192.168.0.132  1 vCPU  1GB RAM  8GB
+└── k8s-worker-03        192.168.0.133  1 vCPU  1GB RAM  8GB
 ```
+
+> Specs are the defaults in `terraform/variables.tf` — override them in `terraform.tfvars`.
 
 ## Prerequisites
 
@@ -44,14 +46,14 @@ qm template 9000
 
 ```bash
 # On your Proxmox host
-pveum role add TerraformRole -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Audit VM.PowerMgmt Datastore.AllocateSpace Datastore.Audit"
+pveum role add TerraformRole -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Audit VM.PowerMgmt Datastore.AllocateSpace Datastore.Audit SDN.Use VM.GuestAgent.Audit"
 pveum user add terraform@pve --password your-password
 pveum aclmod / -user terraform@pve -role TerraformRole
 ```
 
 ### 3. Minio bucket for Terraform state
 
-Create a bucket named `terraform-state` in your Minio instance and update `versions.tf` with your Minio IP and credentials.
+Create a bucket named `terraform-state` in your Minio instance (see [`docs/minio.md`](docs/minio.md)) and update `versions.tf` with your Minio endpoint and credentials.
 
 ### 4. Local tools
 
@@ -65,8 +67,7 @@ brew install terraform ansible
 
 ```bash
 cd terraform
-cp terraform.tfvars.example terraform.tfvars
-# edit terraform.tfvars with your values
+# edit terraform.tfvars with your values (proxmox creds, SSH key, IPs)
 
 terraform init
 terraform plan

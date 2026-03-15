@@ -9,7 +9,7 @@ This ensures Terraform state is always available even when the cluster is down.
 |---|---|
 | Hostname | `minio` |
 | Template | Alpine 3.21 |
-| IP | `192.168.0.200/24` |
+| IP | `192.168.0.95/24` |
 | CPU | 1 core |
 | RAM | 512MB |
 | Disk | 20GB `local-lvm` |
@@ -41,25 +41,28 @@ rc-service minio start
 
 ## Access
 
-- Console → http://192.168.0.200:9001
-- API → http://192.168.0.200:9000
+- Console → http://192.168.0.95:9001
+- API → http://192.168.0.95:9000
 
 ## Terraform Backend
+
+Configured in `terraform/versions.tf`:
 
 ```hcl
 backend "s3" {
   bucket   = "terraform-state"
   key      = "infrastructure/k3s-home-lab/terraform.tfstate"
   region   = "main"
-  endpoint = "http://192.168.0.200:9000"
+  endpoints = { s3 = "http://192.168.0.95:9000" }
 
   access_key = "minioadmin"
-  secret_key = "changeme123!"
+  secret_key = "your-secret-key"
 
   skip_credentials_validation = true
   skip_metadata_api_check     = true
   skip_region_validation      = true
-  force_path_style            = true
+  skip_requesting_account_id  = true
+  use_path_style              = true
 }
 ```
 
@@ -68,4 +71,22 @@ backend "s3" {
 ```bash
 rc-service minio start|stop|restart|status
 tail -f /var/log/minio.log
+```
+
+## mc Client (local machine)
+
+Install and configure the Minio CLI client:
+
+```bash
+brew install minio/stable/mc
+mc alias set local http://192.168.0.95:9000 minioadmin
+# Enter your secret key when prompted
+```
+
+Common commands:
+
+```bash
+mc ls local                        # list buckets
+mc ls local/terraform-state        # list objects in a bucket
+mc cp local/terraform-state/...    # download a file
 ```

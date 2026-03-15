@@ -2,7 +2,7 @@
 variable "proxmox_url" {
   description = "Proxmox API URL"
   type        = string
-  default     = "https://192.168.0.90:8006"  # ← your Proxmox IP
+  default     = "https://192.168.0.90:8006" # ← your Proxmox IP
 }
 
 variable "proxmox_user" {
@@ -20,14 +20,14 @@ variable "proxmox_password" {
 variable "proxmox_node" {
   description = "Proxmox node name"
   type        = string
-  default     = "hyper01"  # ← your Proxmox node name (check in UI)
+  default     = "hyper01" # ← your Proxmox node name (check in UI)
 }
 
 # VM template
 variable "template_id" {
   description = "Proxmox VM template ID (Ubuntu 24.04 cloud image)"
   type        = number
-  default     = 9000  # ← ID you'll assign when creating the template
+  default     = 9000 # ← ID you'll assign when creating the template
 }
 
 # SSH
@@ -127,13 +127,13 @@ variable "region" {
 variable "access_key" {
   description = "Minio access key for S3 backend"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "secret_key" {
   description = "Minio secret key for S3 backend"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "endpoint" {

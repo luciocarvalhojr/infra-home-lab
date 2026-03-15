@@ -37,3 +37,41 @@ module "workers" {
   ssh_public_key = var.ssh_public_key
   tags           = ["worker", "k3s"]
 }
+
+# ─────────────────────────────────────────────
+# Generate Ansible inventory from Terraform state
+# ─────────────────────────────────────────────
+resource "local_file" "ansible_inventory" {
+  content = templatefile("${path.module}/templates/inventory.tpl", {
+    controlplane_ip      = var.controlplane_ip
+    worker_ips           = var.worker_ips
+    ssh_user             = var.ansible_user
+    ssh_private_key_file = var.ssh_private_key_file
+  })
+  filename        = "${path.module}/../ansible/inventory.yml"
+  file_permission = "0644"
+}
+
+# ─────────────────────────────────────────────
+# Run Ansible after VMs are provisioned
+# ─────────────────────────────────────────────
+resource "null_resource" "ansible" {
+  depends_on = [
+    module.controlplane,
+    module.workers,
+    local_file.ansible_inventory,
+  ]
+
+  triggers = {
+    controlplane_id = module.controlplane.vm_id
+    worker_ids      = join(",", module.workers[*].vm_id)
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      ansible-playbook \
+        -i ${path.module}/../ansible/inventory.yml \
+        ${path.module}/../ansible/k3s.yml
+    EOT
+  }
+}

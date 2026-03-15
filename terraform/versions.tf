@@ -6,6 +6,14 @@ terraform {
       source  = "bpg/proxmox"
       version = "~> 0.70"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
   }
 
   # Minio S3-compatible backend — production-ready, same API as AWS S3

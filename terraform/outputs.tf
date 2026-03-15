@@ -8,10 +8,7 @@ output "worker_ips" {
   value       = var.worker_ips
 }
 
-#output "ansible_inventory" {
-#  description = "Ready-to-use Ansible inventory"
-#  value = templatefile("${path.module}/../ansible/inventory.yml", {
-#    controlplane_ip = var.controlplane_ip
-#    worker_ips      = var.worker_ips
-#  })
-#}
+output "ansible_inventory_path" {
+  description = "Path to the generated Ansible inventory file"
+  value       = local_file.ansible_inventory.filename
+}

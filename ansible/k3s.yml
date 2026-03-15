@@ -9,7 +9,7 @@
   hosts: controlplane
   become: true
   vars:
-    k3s_version: "v1.34.4+k3s1"  # pin to your current version
+    k3s_version: "v1.34.5+k3s1"  # pin to your current version
   roles:
     - k3s_server
 
@@ -17,7 +17,7 @@
   hosts: workers
   become: true
   vars:
-    k3s_version: "v1.34.4+k3s1"
-    controlplane_ip: "192.168.0.150"
+    k3s_version: "v1.34.5+k3s1"
+    controlplane_ip: "{{ hostvars[groups['controlplane'][0]]['ansible_host'] }}"
   roles:
     - k3s_agent

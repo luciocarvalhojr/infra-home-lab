@@ -36,6 +36,18 @@ variable "ssh_public_key" {
   type        = string
 }
 
+variable "ssh_private_key_file" {
+  description = "Path to SSH private key used by Ansible to connect to VMs"
+  type        = string
+  default     = "~/.ssh/id_rsa"
+}
+
+variable "ansible_user" {
+  description = "OS user created by cloud-init on VMs"
+  type        = string
+  default     = "ubuntu"
+}
+
 # Network
 variable "gateway" {
   description = "Network gateway"

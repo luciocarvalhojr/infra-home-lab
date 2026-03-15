@@ -8,9 +8,7 @@
   shell: |
     curl -sfL https://get.k3s.io | sh -s - server \
       --cluster-init \
-      --disable traefik \
       --disable servicelb \
-      --node-label "node-role.kubernetes.io/master=true" \
       --write-kubeconfig-mode 644
   environment:
     INSTALL_K3S_VERSION: "{{ k3s_version }}"
@@ -36,9 +34,9 @@
     dest: "{{ playbook_dir }}/../kubeconfig.yml"
     flat: true
 
-- name: Fix kubeconfig server address
-  delegate_to: localhost
-  replace:
-    path: "{{ playbook_dir }}/../kubeconfig.yml"
-    regexp: 'https://127.0.0.1:6443'
-    replace: "https://{{ ansible_host }}:6443"
+#- name: Fix kubeconfig server address
+#  delegate_to: localhost
+#  replace:
+#    path: "{{ playbook_dir }}/../kubeconfig.yml"
+#    regexp: 'https://127.0.0.1:6443'
+#    replace: "https://{{ ansible_host }}:6443"

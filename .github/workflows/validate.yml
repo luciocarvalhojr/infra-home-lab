@@ -38,12 +38,9 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
 
       - name: Install ansible-lint
         run: pip install ansible-lint
 
       - name: Run ansible-lint
-        working-directory: ansible
         run: ansible-lint ansible/

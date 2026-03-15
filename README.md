@@ -58,7 +58,23 @@ Create a bucket named `terraform-state` in your Minio instance (see [`docs/minio
 ### 4. Local tools
 
 ```bash
-brew install terraform ansible
+brew install terraform ansible pre-commit
+```
+
+## Local development
+
+[pre-commit](https://pre-commit.com) hooks run the same checks as CI (terraform fmt/validate, ansible-lint) plus general hygiene (trailing whitespace, YAML syntax, merge conflict markers).
+
+Install the hooks once after cloning:
+
+```bash
+pre-commit install
+```
+
+Run against all files manually:
+
+```bash
+pre-commit run --all-files
 ```
 
 ## Usage

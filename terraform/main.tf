@@ -22,8 +22,8 @@ module "controlplane" {
 # K3s Worker Nodes
 # ─────────────────────────────────────────────
 module "workers" {
-  source = "github.com/luciocarvalhojr/terraform-modules//modules/proxmox-vm?ref=v1.0.0"
-  count = var.worker_count
+  source         = "github.com/luciocarvalhojr/terraform-modules//modules/proxmox-vm?ref=v1.0.0"
+  count          = var.worker_count
   name           = "k3s-wkr-${count.index + 1}"
   vm_id          = 301 + count.index
   proxmox_node   = var.proxmox_node

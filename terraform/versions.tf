@@ -6,6 +6,10 @@ terraform {
       source  = "bpg/proxmox"
       version = "~> 0.70"
     }
+    technitium = {
+      source  = "kenske/technitium"
+      version = ">= 0.2.2"
+    }
     local = {
       source  = "hashicorp/local"
       version = "~> 2.5"
@@ -35,4 +39,9 @@ provider "proxmox" {
   username = var.proxmox_user
   password = var.proxmox_password
   insecure = true # set to false if you have a valid cert on Proxmox
+}
+
+provider "technitium" {
+  host  = var.technitium_host
+  token = var.technitium_token
 }

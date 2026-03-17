@@ -1,8 +1,28 @@
 # ─────────────────────────────────────────────
+# State migration: proxmox-vm → k3s-node (v1.2.0)
+# VM moved into nested module.vm submodule
+# Safe to remove after first successful apply
+# ─────────────────────────────────────────────
+#moved {
+#  from = module.controlplane.proxmox_virtual_environment_vm.this
+#  to   = module.controlplane.module.vm.proxmox_virtual_environment_vm.this
+#}
+
+#moved {
+#  from = module.workers[0].proxmox_virtual_environment_vm.this
+#  to   = module.workers[0].module.vm.proxmox_virtual_environment_vm.this
+#}
+
+#moved {
+#  from = module.workers[1].proxmox_virtual_environment_vm.this
+#  to   = module.workers[1].module.vm.proxmox_virtual_environment_vm.this
+#}
+
+# ─────────────────────────────────────────────
 # K3s Control Plane
 # ─────────────────────────────────────────────
 module "controlplane" {
-  source = "github.com/luciocarvalhojr/terraform-modules//modules/proxmox-vm?ref=v1.0.0"
+  source = "github.com/luciocarvalhojr/terraform-modules//modules/k3s-node?ref=v1.2.1"
 
   name           = "k3s-cp-01"
   vm_id          = 300
@@ -15,14 +35,15 @@ module "controlplane" {
   gateway        = var.gateway
   dns_servers    = var.dns_servers
   ssh_public_key = var.ssh_public_key
-  tags           = ["k3s", "controlplane"]
+  tags           = ["controlplane"]
+  dns_zone       = var.dns_zone
 }
 
 # ─────────────────────────────────────────────
 # K3s Worker Nodes
 # ─────────────────────────────────────────────
 module "workers" {
-  source         = "github.com/luciocarvalhojr/terraform-modules//modules/proxmox-vm?ref=v1.0.0"
+  source         = "github.com/luciocarvalhojr/terraform-modules//modules/k3s-node?ref=v1.2.1"
   count          = var.worker_count
   name           = "k3s-wkr-${count.index + 1}"
   vm_id          = 301 + count.index
@@ -35,7 +56,8 @@ module "workers" {
   gateway        = var.gateway
   dns_servers    = var.dns_servers
   ssh_public_key = var.ssh_public_key
-  tags           = ["worker", "k3s"]
+  tags           = ["worker"]
+  dns_zone       = var.dns_zone
 }
 
 # ─────────────────────────────────────────────

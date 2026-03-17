@@ -141,3 +141,22 @@ variable "endpoint" {
   type        = string
   default     = "http://192.168.0.95:9000"
 }
+
+# technitium DNS server credentials for dynamic DNS records
+variable "dns_zone" {
+  description = "Default zone DNS"
+  type        = string
+  default     = "home.lan"
+}
+
+variable "technitium_host" {
+  description = "Technitium DNS server URL for dynamic DNS record creation"
+  type        = string
+  default     = ""
+}
+
+variable "technitium_token" {
+  description = "API token for Technitium DNS server"
+  type        = string
+  sensitive   = true
+}

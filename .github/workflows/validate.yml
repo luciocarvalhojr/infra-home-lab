@@ -35,6 +35,13 @@ jobs:
       - name: Init tflint plugins
         run: tflint --init
 
+      - name: Install terraform-docs
+        run: |
+          curl -sSLo /tmp/terraform-docs.tar.gz \
+            https://github.com/terraform-docs/terraform-docs/releases/download/v0.19.0/terraform-docs-v0.19.0-linux-amd64.tar.gz
+          tar -xzf /tmp/terraform-docs.tar.gz -C /tmp
+          sudo mv /tmp/terraform-docs /usr/local/bin/terraform-docs
+
       - name: Terraform Format Check
         working-directory: terraform
         run: terraform fmt -check -recursive

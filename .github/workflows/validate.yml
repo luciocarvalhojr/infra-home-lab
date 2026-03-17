@@ -33,6 +33,7 @@ jobs:
       - uses: terraform-linters/setup-tflint@v4
 
       - name: Init tflint plugins
+        working-directory: terraform
         run: tflint --init
 
       - name: Install terraform-docs

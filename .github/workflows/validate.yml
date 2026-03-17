@@ -7,6 +7,18 @@ on:
     branches: [main]
 
 jobs:
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   terraform:
     name: Terraform Validate
     runs-on: ubuntu-latest
@@ -17,6 +29,19 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.9"
+
+      - uses: terraform-linters/setup-tflint@v4
+
+      - name: Init tflint plugins
+        working-directory: terraform
+        run: tflint --init
+
+      - name: Install terraform-docs
+        run: |
+          curl -sSLo /tmp/terraform-docs.tar.gz \
+            https://github.com/terraform-docs/terraform-docs/releases/download/v0.19.0/terraform-docs-v0.19.0-linux-amd64.tar.gz
+          tar -xzf /tmp/terraform-docs.tar.gz -C /tmp
+          sudo mv /tmp/terraform-docs /usr/local/bin/terraform-docs
 
       - name: Terraform Format Check
         working-directory: terraform
@@ -29,6 +54,22 @@ jobs:
       - name: Terraform Validate
         working-directory: terraform
         run: terraform validate
+
+      - name: Terraform TFLint
+        working-directory: terraform
+        run: tflint --minimum-failure-severity=warning
+
+      - name: Terraform Docs
+        working-directory: terraform
+        run: terraform-docs --lockfile=false .
+
+      - name: Terraform Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: terraform
+          quiet: true
+          soft_fail: true
+
 
   ansible:
     name: Ansible Lint

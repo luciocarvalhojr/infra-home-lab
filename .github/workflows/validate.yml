@@ -7,6 +7,18 @@ on:
     branches: [main]
 
 jobs:
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   terraform:
     name: Terraform Validate
     runs-on: ubuntu-latest
@@ -29,6 +41,22 @@ jobs:
       - name: Terraform Validate
         working-directory: terraform
         run: terraform validate
+
+      - name: Terraform TFLint
+        working-directory: terraform
+        run: tflint --minimum-failure-severity=warning
+
+      - name: Terraform Docs
+        working-directory: terraform
+        run: terraform-docs --lockfile=false .
+
+      - name: Terraform Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: terraform
+          quiet: true
+          soft_fail: true
+
 
   ansible:
     name: Ansible Lint

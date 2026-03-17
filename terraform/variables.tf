@@ -117,31 +117,6 @@ variable "worker_disk" {
   default     = 8
 }
 
-# Minio S3-compatible backend for Terraform state
-variable "region" {
-  description = "Region for S3 backend (ignored by Minio but required by Terraform)"
-  type        = string
-  default     = "main"
-}
-
-variable "access_key" {
-  description = "Minio access key for S3 backend"
-  type        = string
-  sensitive   = true
-}
-
-variable "secret_key" {
-  description = "Minio secret key for S3 backend"
-  type        = string
-  sensitive   = true
-}
-
-variable "endpoint" {
-  description = "Minio endpoint for S3 backend"
-  type        = string
-  default     = "http://192.168.0.95:9000"
-}
-
 # technitium DNS server credentials for dynamic DNS records
 variable "dns_zone" {
   description = "Default zone DNS"

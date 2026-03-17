@@ -30,6 +30,11 @@ jobs:
         with:
           terraform_version: "~1.9"
 
+      - uses: terraform-linters/setup-tflint@v4
+
+      - name: Init tflint plugins
+        run: tflint --init
+
       - name: Terraform Format Check
         working-directory: terraform
         run: terraform fmt -check -recursive
